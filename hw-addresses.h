@@ -36,26 +36,24 @@ For more information, please refer to <http://unlicense.org/>
 #pragma once
 
 //-------- physical addresses for the peripherals, as found in the processor documentation:
+// Offsets are same across all raspberry pi processors, but base address changes depending on rpi version
 #if defined(RPI_V1)
-#define TIMER_BASE    0x20003000
-#define DMA_BASE      0x20007000
-#define CLOCK_BASE    0x20101000 // Undocumented. Taken from http://www.scribd.com/doc/127599939/BCM2835-Audio-clocks
-#define GPIO_BASE     0x20200000
-#define PWM_BASE      0x2020C000
-#define GPIO_BASE_BUS 0x7E200000 //this is the physical bus address of the GPIO module. This is only used when other peripherals directly connected to the bus (like DMA) need to read/write the GPIOs
-#define PWM_BASE_BUS  0x7E20C000
+#define BCM_PERI_BASE 0x20000000
 
 #elif defined(RPI_V2) || defined(RPI_V3)
-// RPI2 and 3 use a different chipset, and the peripheral addresses have changed.
-#define TIMER_BASE    0x3F003000
-#define DMA_BASE      0x3F007000
-#define CLOCK_BASE    0x3F101000 // Undocumented. Extrapolated from RPI_V1 CLOCK_BASE
-#define GPIO_BASE     0x3F200000
-#define PWM_BASE      0x3F20C000
-#define GPIO_BASE_BUS 0x7E200000 //this is the physical bus address of the GPIO module. This is only used when other peripherals directly connected to the bus (like DMA) need to read/write the GPIOs
-#define PWM_BASE_BUS  0x7E20C000
+#define BCM_PERI_BASE 0x3F000000
+
+#elif defined(RPI_V4)
+#define BCM_PERI_BASE 0xFE000000
 
 #else
-#error "Must define either RPI_V1, RPI_V2 or RPI_V3, based on target."
+#error "Must define either RPI_V1, RPI_V2, RPI_V3, or RPI_V4 based on target."
 #endif
 
+#define TIMER_BASE    (BCM_PERI_BASE + 0x3000)
+#define DMA_BASE      (BCMM_PERI_BASE + 0x7000)
+#define CLOCK_BASE    (BCM_PERI_BASE + 0x101000) // Undocumented. Taken from http://www.scribd.com/doc/127599939/BCM2835-Audio-clocks
+#define GPIO_BASE     (BCM_PERI_BASE + 0x200000)
+#define PWM_BASE      (BCM_PERI_BASE + 0x20C000)
+#define GPIO_BASE_BUS 0x7E200000 //this is the physical bus address of the GPIO module. This is only used when other peripherals directly connected to the bus (like DMA) need to read/write the GPIOs
+#define PWM_BASE_BUS  0x7E20C000
